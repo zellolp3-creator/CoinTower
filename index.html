@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0a0f16">
+  <meta name="description" content="Coin Tower 1.0 - vollständiges mobiles Idle-Tycoon-Spiel">
+  <title>Coin Tower 1.0</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+    <header class="topbar">
+      <div class="brand">
+        <div><strong>🪙 COIN TOWER</strong><span>Vollversion 1.0</span></div>
+        <button class="icon-btn" id="saveBtn" title="Speichern">💾</button>
+      </div>
+      <div class="resources">
+        <div class="resource coin"><small>MÜNZEN</small><b id="coins">0</b></div>
+        <div class="resource crystal"><small>KRISTALLE</small><b id="crystals">0</b></div>
+        <div class="resource core"><small>KERNE</small><b id="cores">0</b></div>
+        <div class="resource token"><small>TOKENS</small><b id="tokens">0</b></div>
+      </div>
+      <div class="subresources">
+        <span>⚡ <b id="cps">0</b>/s</span>
+        <span>👆 <b id="clickPower">1</b>/Klick</span>
+        <span>🏰 Turm <b id="towerLevel">1</b></span>
+        <span>⭐ Prestige <b id="prestigeLevel">0</b></span>
+      </div>
+    </header>
+
+    <main>
+      <section id="towerScreen" class="screen active">
+        <div class="hero">
+          <div class="hero-top">
+            <div class="tower-card"><b id="towerName">Münzfundament</b><span id="towerDesc">Baue deinen Turm Stein für Stein auf.</span></div>
+            <div class="stats-card">
+              <div><span>Multiplikator</span><b id="multiplier">×1,00</b></div>
+              <div><span>Krit</span><b id="critInfo">5% ×2</b></div>
+              <div><span>Gesamt</span><b id="totalCoins">0</b></div>
+            </div>
+          </div>
+          <div class="tower-scene">
+            <div class="sky-glow"></div>
+            <div class="tower-graphic" id="towerGraphic">🏰</div>
+            <div class="coin-wrap" id="coinWrap">
+              <button class="coin-button" id="coinButton" aria-label="Münze sammeln">
+                <img src="assets/coin.svg" alt="Coin Tower Münze">
+              </button>
+              <div class="coin-shadow"></div>
+            </div>
+          </div>
+          <div class="click-label">KLICKEN FÜR MÜNZEN <span id="clickHint">+1 🪙</span></div>
+          <div class="info-row">
+            <div class="pill">🔥 Serie <b id="streak">0</b></div>
+            <div class="pill">⚡ Krits <b id="crits">0</b></div>
+            <div class="pill">⏱️ Spielzeit <b id="playtime">0s</b></div>
+          </div>
+          <div class="quick-grid">
+            <button class="quick" data-go="shop"><i>🛒</i>Shop</button>
+            <button class="quick" data-go="prestige"><i>💎</i>Prestige</button>
+            <button class="quick" data-go="battle"><i>⚔️</i>Arena</button>
+            <button class="quick" data-go="more"><i>📊</i>Mehr</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="shopScreen" class="screen">
+        <div class="card">
+          <div class="head"><div><h2>🛒 Turm-Shop</h2><p>50 Jobs. Jede Etage macht deinen Turm mächtiger.</p></div><b id="shopOwned">0/50</b></div>
+          <div class="buybar" id="buybar">
+            <button data-mode="1" class="on">×1</button><button data-mode="10">×10</button><button data-mode="25">×25</button><button data-mode="100">×100</button><button data-mode="MAX">MAX</button>
+          </div>
+          <div id="shopList"></div>
+        </div>
+      </section>
+
+      <section id="prestigeScreen" class="screen">
+        <div class="card prestige-card">
+          <div class="head"><div><h2>💎 Prestige</h2><p>Setze den Turm zurück und erhalte Kristalle für permanente Stärke.</p></div></div>
+          <div class="prestige-stats">
+            <div><small>Nächster Preis</small><b id="prestigeReq">0</b> 🪙</div>
+            <div><small>Belohnung</small><b id="prestigeReward">0</b> 💎</div>
+            <div><small>Aktueller Bonus</small><b id="prestigeBonus">×1,00</b></div>
+          </div>
+          <button class="big-action" id="prestigeBtn">💎 PRESTIGE AUSFÜHREN</button>
+          <div class="divider"></div>
+          <div class="head"><div><h2>🔷 Mega Prestige</h2><p>Kristalle zurücksetzen und Kristallkerne verdienen.</p></div></div>
+          <div class="prestige-stats">
+            <div><small>Nächster Preis</small><b id="megaReq">0</b> 💎</div>
+            <div><small>Belohnung</small><b id="megaReward">0</b> 🔷</div>
+            <div><small>Aktueller Bonus</small><b id="megaBonus">×1,00</b></div>
+          </div>
+          <button class="big-action purple" id="megaBtn">🔷 MEGA PRESTIGE</button>
+        </div>
+        <div class="card" id="forgeCard">
+          <div class="head"><div><h2>🔨 Kristall-Schmiede</h2><p>Ab Prestige 20 freigeschaltet. Kristalle werden zu Kernen.</p></div><b id="forgeStatus">🔒</b></div>
+          <div class="forge-row"><span>Umwandlung</span><b>100 💎 → 1 🔷</b></div>
+          <button class="big-action" id="forgeBtn">🔨 KERN SCHMIEDEN</button>
+        </div>
+      </section>
+
+      <section id="battleScreen" class="screen">
+        <div class="card">
+          <div class="head"><div><h2>⚔️ Battle Arena</h2><p>Besiege Gegner, verdiene Battle Tokens und rüste dich auf.</p></div><b>🏆 <span id="wins">0</span></b></div>
+          <div class="battle-grid">
+            <div class="battle-stat"><small>Angriff</small><b id="attack">10</b></div>
+            <div class="battle-stat"><small>Max. HP</small><b id="maxHp">100</b></div>
+            <div class="battle-stat"><small>Belohnung</small><b id="battleReward">0</b> 🪙</div>
+            <div class="battle-stat"><small>Tokens</small><b id="battleTokens">0</b> 🏅</div>
+          </div>
+          <div class="enemy">
+            <div class="enemy-tier" id="enemyTier">ARENA</div>
+            <div class="avatar" id="enemyAvatar">👺</div>
+            <h3 id="enemyName">Goblin-Kurier</h3>
+            <div class="hp"><span id="enemyHp"></span></div>
+            <small id="enemyHpText">50 / 50 HP</small>
+            <div class="battle-log" id="battleLog">Wähle einen Angriff.</div>
+          </div>
+          <div class="battle-actions">
+            <button class="action primary" id="attackBtn">⚔️ ANGREIFEN</button>
+            <button class="action" id="heavyBtn">💥 SCHWERER HIEB</button>
+            <button class="action green" id="healBtn">💚 HEILEN</button>
+            <button class="action" id="nextEnemyBtn">➡️ NÄCHSTER</button>
+          </div>
+        </div>
+        <div class="card token-shop">
+          <div class="head"><div><h2>🏅 Battle-Token-Shop</h2><p>Dauerhafte Arena-Upgrades.</p></div><b id="tokenBalance">0</b> 🏅</div>
+          <div id="tokenShopList"></div>
+        </div>
+      </section>
+
+      <section id="moreScreen" class="screen">
+        <div class="card">
+          <div class="head"><div><h2>📊 Statistik</h2><p>Deine komplette Coin-Tower-Laufbahn.</p></div></div>
+          <div class="statgrid" id="statsGrid"></div>
+        </div>
+        <div class="card">
+          <div class="head"><div><h2>🏆 Achievements</h2><p>Meilensteine bringen kleine permanente Boni.</p></div><b id="achievementCount">0/0</b></div>
+          <div id="achievementList"></div>
+        </div>
+        <div class="card">
+          <div class="head"><div><h2>⚙️ Einstellungen</h2><p>Speichern, Darstellung und Spieloptionen.</p></div></div>
+          <div class="setting"><span>✨ Schwebende Münzen</span><button class="toggle" id="floatToggle"></button></div>
+          <div class="setting"><span>💾 Autosave</span><button class="toggle" id="autosaveToggle"></button></div>
+          <div class="setting"><span>📤 Spielstand exportieren</span><button class="small-action" id="exportBtn">EXPORT</button></div>
+          <div class="setting"><span>📥 Spielstand importieren</span><button class="small-action" id="importBtn">IMPORT</button></div>
+          <div class="setting danger"><span>🗑️ Spielstand zurücksetzen</span><button class="small-action red" id="resetBtn">RESET</button></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <nav class="bottom-nav">
+    <button class="nav active" data-go="tower"><span>🏠</span>Turm</button>
+    <button class="nav" data-go="shop"><span>🛒</span>Shop</button>
+    <button class="nav" data-go="prestige"><span>💎</span>Prestige</button>
+    <button class="nav" data-go="battle"><span>⚔️</span>Battle</button>
+    <button class="nav" data-go="more"><span>📊</span>Mehr</button>
+  </nav>
+
+  <div id="effects"></div>
+  <div id="toast"></div>
+  <div class="modal" id="modal"><div class="modalbox"><h2 id="modalTitle"></h2><p id="modalText"></p><button class="big-action" id="modalClose">WEITER</button></div></div>
+  <input type="file" id="importFile" accept=".json,application/json" hidden>
+  <script src="game.js"></script>
+  <script src="effects.js"></script>
+  <script src="save.js"></script>
+  <script src="shop.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
